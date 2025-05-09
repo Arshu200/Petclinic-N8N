@@ -21,18 +21,7 @@ pipeline {
         sh 'mvn test'
       }
     }
-    stage('Docker') {
-                steps {
-                    script {
-                        try {
-                            sh "docker build -t spring-petclinic:${env.BUILD_NUMBER} ."
-                        } catch (Exception e) {
-                            error "Docker build failed: ${e.message}"
-                        }
-                    }
-                }
-            }
-
+    
     stage('Deploy') {
       steps {
         echo 'Deployment step placeholder'
