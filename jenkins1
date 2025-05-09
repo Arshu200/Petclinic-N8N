@@ -8,26 +8,22 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        // Intentional failure: wrong branch name
-        git branch: 'test', url: 'https://github.com/Arshu200/Petclinic-N8N.git'
+        git branch: 'main', url: 'https://github.com/Arshu200/Petclinic-N8N.git'
       }
     }
     stage('Build') {
       steps {
-        // Intentional failure: invalid Maven goal
-        sh 'mvn clean packagge'
+        sh 'mvn clean package'
       }
     }
     stage('Test') {
       steps {
-        // Intentional failure: non-existent test class
-        sh 'mvn test -Dtest=NoSuchTestClass'
+        sh 'mvn test'
       }
     }
     stage('Deploy') {
       steps {
-        // Intentional failure: command with error
-        sh 'exit 1'
+        echo 'Deployment step placeholder'
       }
     }
   }
@@ -38,7 +34,6 @@ pipeline {
         try {
           echo "Collecting pipeline logs..."
 
-          // Note: This may not work in sandboxed pipelines
           def log = currentBuild.rawBuild.getLog(1000)
           def logText = log.join("\n")
 
