@@ -1,6 +1,10 @@
 pipeline {
   agent any
 
+  tools {
+    maven 'Maven'
+  }
+
   stages {
     stage('Checkout') {
       steps {
@@ -30,11 +34,10 @@ pipeline {
         try {
           echo "Collecting pipeline logs..."
 
-          // Error: Using a restricted method (may not work in sandboxed Jenkins)
+          // Note: This may not work in sandboxed pipelines
           def log = currentBuild.rawBuild.getLog(1000)
           def logText = log.join("\n")
 
-          // Error: Sending logs to an insecure HTTP endpoint
           def payload = groovy.json.JsonOutput.toJson([log: logText])
           def response = httpRequest(
             httpMode: 'POST',
