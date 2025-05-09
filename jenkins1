@@ -8,17 +8,17 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/Arshu200/Petclinic-N8N.git'
+        git branch: 'test', url: 'https://github.com/Arshu200/Petclinic-N8N.git'
       }
     }
     stage('Build') {
       steps {
-        sh 'mvn clean package'
+        sh 'mvn clean packagge'
       }
     }
     stage('Test') {
       steps {
-        sh 'mvn test'
+        sh 'mvn test -Dtest=NoSuchTestClass'
       }
     }
     stage('Deploy') {
