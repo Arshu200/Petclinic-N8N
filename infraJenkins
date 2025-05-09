@@ -1,0 +1,60 @@
+pipeline {
+  agent any
+
+  tools {
+    maven 'Maven'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        // Simulate a network failure (host unreachable)
+        sh 'git clone https://invalid-host.example.com/some/repo.git || { echo "Network error: Host unreachable"; exit 1; }'
+      }
+    }
+    stage('Build') {
+      steps {
+        // Simulate missing Java (dependency not installed)
+        sh 'mvndoesnotexist clean package || { echo "Java not found: mvn command missing"; exit 1; }'
+      }
+    }
+    stage('Test') {
+      steps {
+        // Simulate disk full error
+        sh 'dd if=/dev/zero of=./bigfile bs=1M count=102400 || { echo "Disk full error"; exit 1; }'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        // Simulate permission denied error
+        sh 'touch /root/testfile 2>/dev/null || { echo "Permission denied: Cannot write to /root"; exit 1; }'
+      }
+    }
+  }
+
+  post {
+    failure {
+      script {
+        try {
+          echo "Collecting pipeline logs..."
+
+          // Note: This may not work in sandboxed pipelines
+          def log = currentBuild.rawBuild.getLog(1000)
+          def logText = log.join("\n")
+
+          def payload = groovy.json.JsonOutput.toJson([log: logText])
+          def response = httpRequest(
+            httpMode: 'POST',
+            url: 'http://54.80.157.14:5678/webhook/d82dd1b1-1a68-423e-9ec1-f7c1894ce73b',
+            contentType: 'APPLICATION_JSON',
+            requestBody: payload
+          )
+
+          echo "Webhook response: ${response.status} - ${response.content}"
+        } catch (Exception e) {
+          echo "ERROR sending webhook: ${e.message}"
+        }
+      }
+    }
+  }
+}
