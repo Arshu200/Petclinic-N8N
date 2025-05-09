@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/Arshu200/Petclinic-N8N.git'
+        git 'https://github.com/Arshu200/Petclinic-N8N.git'
       }
     }
     stage('Build') {
@@ -21,10 +21,9 @@ pipeline {
         sh 'mvn test'
       }
     }
-    
     stage('Deploy') {
       steps {
-        echo 'Deployment step placeholder'
+        echo 'Deployment step - replace with actual deployment commands'
       }
     }
   }
