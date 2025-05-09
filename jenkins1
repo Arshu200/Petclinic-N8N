@@ -8,22 +8,26 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/Arshu200/Petclinic-N8N.git'
+        // Intentional failure: wrong branch name
+        git branch: 'test', url: 'https://github.com/Arshu200/Petclinic-N8N.git'
       }
     }
     stage('Build') {
       steps {
-        sh 'mvn clean package'
+        // Intentional failure: invalid Maven goal
+        sh 'mvn clean packagge'
       }
     }
     stage('Test') {
       steps {
-        sh 'mvn test'
+        // Intentional failure: non-existent test class
+        sh 'mvn test -Dtest=NoSuchTestClass'
       }
     }
     stage('Deploy') {
       steps {
-        sh 'echo "Deploying application..."'
+        // Intentional failure: command with error
+        sh 'exit 1'
       }
     }
   }
